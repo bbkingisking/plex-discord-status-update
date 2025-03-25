@@ -31,11 +31,15 @@ A Flask app that updates your Discord custom status based on Plex media playback
 
 ## Configuration
 
-1. **Discord Token Setup**
+1. **Environment file config**
    - Create a `.env` file in the project directory
    - Add your Discord user token:
      ```env
      DISCORD_USER_TOKEN=your_discord_user_token_here
+     ```
+   - Add your Plex username:
+     ```env
+     PLEX_USERNAME=your_plex_username_here
      ```
 
 2. **Plex Webhook Setup**
@@ -60,6 +64,7 @@ A Flask app that updates your Discord custom status based on Plex media playback
 - Verify webhook URL in Plex settings
 - Ensure port 5020 is open in firewall/security groups
 - Confirm Discord token is valid
+- Confirm Plex username is entered correctly (may be case sensitive)
 - Check Plex server logs for webhook delivery attempts
 
 ## Example Output
