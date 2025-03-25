@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 DISCORD_USER_TOKEN = os.getenv('DISCORD_USER_TOKEN')
+PLEX_USERNAME = os.getenv('PLEX_USERNAME')
 
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
@@ -46,22 +47,25 @@ def plex_webhook():
                 # Parse the JSON payload
                 payload = json.loads(request.form['payload'])
 
-                # Handle play/resume events
-                if payload['event'] in ['media.play', 'media.resume']:
-                    # Check if the media type is a track (music)
-                    if payload['Metadata']['type'] == 'track':
-                        # Extract the song title and artist (grandparentTitle)
-                        title = payload['Metadata']['title']
-                        grandparent_title = payload['Metadata']['grandparentTitle']
+                # Specify user
+                if payload['Account']['title'] == PLEX_USERNAME:
 
-                        # Update Discord status
-                        status_text = f"🎵 Listening to {grandparent_title} - {title}"
-                        update_discord_status(status_text)
+                    # Handle play/resume events
+                    if payload['event'] in ['media.play', 'media.resume']:
+                        # Check if the media type is a track (music)
+                        if payload['Metadata']['type'] == 'track':
+                            # Extract the song title and artist (grandparentTitle)
+                            title = payload['Metadata']['title']
+                            grandparent_title = payload['Metadata']['grandparentTitle']
 
-                # Handle pause/stop events
-                elif payload['event'] in ['media.pause', 'media.stop']:
-                    # Clear Discord status
-                    update_discord_status()  # No argument clears the status
+                            # Update Discord status
+                            status_text = f"🎵 Listening to {grandparent_title} - {title}"
+                            update_discord_status(status_text)
+
+                    # Handle pause/stop events
+                    elif payload['event'] in ['media.pause', 'media.stop']:
+                        # Clear Discord status
+                        update_discord_status()  # No argument clears the status
 
             except Exception as e:
                 print(f"Failed to process payload: {e}")
